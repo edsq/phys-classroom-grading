@@ -1,0 +1,24 @@
+[project]
+name = "phys-classroom-grading"
+version = "0.1.0"
+description = "Tool for getting PhysicsClassroom concept builders into Canvas."
+authors = [
+    {name = "Edward Eskew", email = "edward.eskew@wsu.edu"},
+]
+dependencies = [
+    "pandas>=2.1.3",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black[jupyter]>=23.11.0",
+    "pre-commit>=3.5.0",
+    "ipython>=8.18.1",
+]
