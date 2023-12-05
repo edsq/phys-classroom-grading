@@ -37,14 +37,18 @@ def parse_spreadsheet(fname):
             parsed_dict[assignment] = {}
 
         if student not in parsed_dict[assignment].keys():
-            parsed_dict[assignment][student] = {"points": 0, "max": 0}
+            parsed_dict[assignment][student] = {"points": 0, "max": 0, "tasks": []}
 
         assert isinstance(row["Completed"], bool)
         if row["Completed"]:
             parsed_dict[assignment][student]["points"] += 1
 
-        if sanitize_str(row["Section"], lower=True) != "wizard level":
+        task_section = sanitize_str(row["Section"], lower=True)
+        if not (task_section == "wizard level" or task_section == "wizard"):
             parsed_dict[assignment][student]["max"] += 1
+
+        # Get tasks that go into this assignment (useful for debugging purposes)
+        parsed_dict[assignment][student]["tasks"].append(f"{task}: {row['Section']}")
 
     out_dict = {}
     for assignment in assignments.keys():
