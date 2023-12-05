@@ -47,4 +47,52 @@ tasks = [
     "Work",
 ]
 
+["Week 7 Concept Builders"]
+points = 9
+tasks = [
+    "Pressure and Temperature",
+    "Volume and Temperature",
+    "Pressure and Volume",
+]
 
+["Week 8 Concept Builders"]
+points = 10
+tasks = [
+    "Charge and Charging",
+    "Getting the Hang of Charge",
+    "Coulomb's Law",
+    "Charge Interactions",
+]
+
+["Week 9 Concept Builders"]
+points = 9
+tasks = [
+    "Light Bulb Anatomy",
+    "Current",
+    "Know Your Potential",
+]
+
+["Week 11 Concept Builders"]
+points = 19
+tasks = [
+    "Wave Basics",
+    "Frequency and Period",
+    "Wave Characteristics",
+    "Wavelength",
+    "Waves - Case Studies",
+    "Rocking the Boat",
+]
+
+["Week 12 Concept Builders"]
+points = 3
+tasks = [
+    "Wave Interference",
+]
+
+["Week 13 Concept Builders"]
+points = 6
+tasks = [
+    "Which One Doesn't Belong? Projectile Motion",
+    "Trajectory - Horizontally-Launched Projectiles",
+    "Trajectory - Angle-Launched Projectiles",
+]	
