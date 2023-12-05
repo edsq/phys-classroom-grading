@@ -8,16 +8,22 @@ with open("assignments.toml", "rb") as f:
     assignments = tomllib.load(f)
 
 
+def sanitize_str(in_str, lower=False):
+    """Get rid of extra crap that comes with strings in the PhysicsClassroom output."""
+    out_str = in_str.replace("\u200b", "").strip()
+    if lower:
+        out_str = out_str.lower()
+
+    return out_str
+
+
 def parse_spreadsheet(fname):
     sheet = pd.read_excel(fname)
 
     parsed_dict = {}
     for i, row in sheet.iterrows():
-        task = row["Task"]
-        student = row["Student"]
-
-        # Strip zero width spaces and strip whitespace
-        task = task.replace("\u200b", "").strip()
+        task = sanitize_str(row["Task"])
+        student = sanitize_str(row["Student"])
 
         for assignment, info in assignments.items():
             if task in info["tasks"]:
@@ -37,7 +43,7 @@ def parse_spreadsheet(fname):
         if row["Completed"]:
             parsed_dict[assignment][student]["points"] += 1
 
-        if row["Section"] != "Wizard Level":
+        if sanitize_str(row["Section"], lower=True) != "wizard level":
             parsed_dict[assignment][student]["max"] += 1
 
     out_dict = {}
