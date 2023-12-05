@@ -1,4 +1,5 @@
 """Backend things for the tool."""
+from itertools import zip_longest
 from warnings import warn
 import tomllib
 import pandas as pd
@@ -99,6 +100,54 @@ def parse_spreadsheet(sheet, assignments):
     return out_dict
 
 
+def load_grades(concept_builders, all_grades, assignments):
+    """Merge parsed concept builder grades into the overall Canvas grades spreasheet."""
+    canvas_students = list(all_grades["Student"][1:])
+
+    for assignment, info in assignments.items():
+        physics_classroom_students = sorted(list(concept_builders[assignment].keys()))
+        if not canvas_students == physics_classroom_students:
+            # Prepare output to make differences obvious
+            max_name_len = max(
+                [
+                    len(name)
+                    for name in physics_classroom_students + ["Physics Classroom"]
+                ]
+            )
+            zipped_names = zip_longest(
+                physics_classroom_students, canvas_students, fillvalue=""
+            )
+
+            error_str = f"{'Physics Classroom':>{max_name_len}}  Canvas"
+            error_str += f"\n{'-----------------':>{max_name_len}}  ------"
+            for pc_name, canvas_name in zipped_names:
+                error_str += f"\n{pc_name:>{max_name_len}}  {canvas_name}"
+
+            raise ValueError(
+                f"Inconsistent students for assignment '{assignment}': \n{error_str}"
+            )
+
+        cb_grades = [
+            concept_builders[assignment][student]
+            for student in physics_classroom_students
+        ]
+
+        # Canvas appends a number to each assignment, so we need some effort to get the
+        # correct column name
+        col_matches = [col for col in all_grades.columns if col.startswith(assignment)]
+        if len(col_matches) > 1:
+            raise ValueError(
+                f"Multiple columns ({col_matches}) match assignment '{assignment}'"
+            )
+
+        else:
+            col_name = col_matches[0]
+
+        all_grades[col_name] = [info.points] + cb_grades
+
+    return all_grades
+
+
 if __name__ == "__main__":
     sheet = pd.read_excel("example_grades_detailed.xlsx")
 
@@ -109,3 +158,6 @@ if __name__ == "__main__":
 
     df = pd.DataFrame.from_dict(out_dict)
     df.to_csv("out_test.csv", header=True)
+
+    init_grades = pd.read_csv("all_grades.csv")
+    all_grades = load_grades(out_dict, init_grades, assignments)
