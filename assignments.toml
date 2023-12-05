@@ -1,0 +1,50 @@
+["Week 1 Concept Builders"]
+points = 12
+tasks = [
+    "Distance vs. Displacement",
+    "Speed-Distance-Time",
+    "Name That Motion",
+    "Motion Diagrams",
+    "Acceleration",
+]
+
+["Week 2 Concept Builders"]
+points = 12
+tasks = [
+    "Position-Time Graphs - Conceptual Analysis",
+    "Velocity-Time Graphs",
+    "Match That Graph",
+    "Dots and Graphs",
+    "Graph That Motion",
+]
+
+["Week 3 Concept Builders"]
+points = 17
+tasks = [
+    "Force and Motion",
+    "Balanced vs. Unbalanced Forces",
+    "Match That Free Body Diagram",
+    "Which One Doesn't Belong? Force and Motion",
+    "Mass And Weight",
+    "Newton's Second Law: Equations as Guides to Thinking",
+    "Net Force Ranking Tasks",
+    "Solve It! (with Newton's Second Law)",
+]
+
+["Week 5 Concept Builders"]
+points = 7
+tasks = [
+    "Name That Energy",
+    "What's Up (and Down) with KE and PE",
+    "Energy Ranking Tasks",
+]
+
+["Week 6 Concept Builders"]
+points = 7
+tasks = [
+    "Energy Analysis",
+    "Energy Analysis 2",
+    "Work",
+]
+
+
