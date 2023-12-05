@@ -103,7 +103,10 @@ def parse_spreadsheet(sheet, assignments):
 
 def load_grades(concept_builders, all_grades, assignments, ignore_test_student=True):
     """Merge parsed concept builder grades into the overall Canvas grades spreasheet."""
-    canvas_students = list(all_grades["Student"][1:])
+    # Get starting index - students are listed after a "Points Possible" row
+    canvas_students = list(all_grades["Student"])
+    i0 = canvas_students.index("    Points Possible") + 1
+    canvas_students = canvas_students[i0:]
 
     if ignore_test_student and canvas_students[-1] == "Student, Test":
         canvas_students = canvas_students[:-1]
@@ -148,7 +151,7 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
             col_name = col_matches[0]
 
         # Check that point value in assignments is same as on Canvas
-        canvas_points = all_grades[col_name][0]
+        canvas_points = all_grades[col_name][i0 - 1]
         expected_points = info["points"]
         if canvas_points != expected_points:
             raise ValueError(
@@ -160,7 +163,7 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
         # https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
         # Also note that the slice here is inclusive of the endpoint, unlike the rest of
         # python.
-        all_grades.loc[1 : len(canvas_students), col_name] = cb_grades
+        all_grades.loc[i0 : len(canvas_students) + i0 - 1, col_name] = cb_grades
 
     return all_grades
 
