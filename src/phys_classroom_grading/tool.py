@@ -147,6 +147,14 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
         else:
             col_name = col_matches[0]
 
+        # Check that point value in assignments is same as on Canvas
+        canvas_points = all_grades[col_name][0]
+        expected_points = info["points"]
+        if canvas_points != expected_points:
+            raise ValueError(
+                f"Canvas spreadsheet shows '{assignment}' worth {canvas_points}, expected {expected_points}"
+            )
+
         # Set grades to corresponding students.  Need to use `loc` here to avoid
         # ambiguity with view vs. copy, see:
         # https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
