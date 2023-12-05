@@ -100,9 +100,12 @@ def parse_spreadsheet(sheet, assignments):
     return out_dict
 
 
-def load_grades(concept_builders, all_grades, assignments):
+def load_grades(concept_builders, all_grades, assignments, ignore_test_student=True):
     """Merge parsed concept builder grades into the overall Canvas grades spreasheet."""
     canvas_students = list(all_grades["Student"][1:])
+
+    if ignore_test_student and canvas_students[-1] == "Student, Test":
+        canvas_students = canvas_students[:-1]
 
     for assignment, info in assignments.items():
         physics_classroom_students = sorted(list(concept_builders[assignment].keys()))
@@ -143,7 +146,12 @@ def load_grades(concept_builders, all_grades, assignments):
         else:
             col_name = col_matches[0]
 
-        all_grades[col_name] = [info.points] + cb_grades
+        # Set grades to corresponding students.  Need to use `loc` here to avoid
+        # ambiguity with view vs. copy, see:
+        # https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+        # Also note that the slice here is inclusive of the endpoint, unlike the rest of
+        # python.
+        all_grades.loc[1 : len(canvas_students), col_name] = cb_grades
 
     return all_grades
 
