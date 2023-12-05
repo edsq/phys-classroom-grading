@@ -1,4 +1,5 @@
 """Backend things for the tool."""
+from datetime import datetime
 from itertools import zip_longest
 from warnings import warn
 import tomllib
@@ -167,5 +168,11 @@ if __name__ == "__main__":
     df = pd.DataFrame.from_dict(out_dict)
     df.to_csv("out_test.csv", header=True)
 
-    init_grades = pd.read_csv("all_grades.csv")
+    canvas_grades_fname = "all_grades"
+    init_grades = pd.read_csv(canvas_grades_fname + ".csv")
     all_grades = load_grades(out_dict, init_grades, assignments)
+    all_grades.to_csv(
+        canvas_grades_fname
+        + f"_updated_{datetime.now().strftime('%Y_%m_%d-%H_%M_%S')}.csv",
+        header=True,
+    )
