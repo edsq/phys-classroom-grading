@@ -1,5 +1,6 @@
 ["Week 1 Concept Builders"]
 points = 12
+bonus = 3
 tasks = [
     "Distance vs. Displacement",
     "Speed-Distance-Time",
@@ -10,6 +11,7 @@ tasks = [
 
 ["Week 2 Concept Builders"]
 points = 12
+bonus = 3
 tasks = [
     "Position-Time Graphs - Conceptual Analysis",
     "Velocity-Time Graphs",
@@ -20,6 +22,7 @@ tasks = [
 
 ["Week 3 Concept Builders"]
 points = 17
+bonus = 6
 tasks = [
     "Force and Motion",
     "Balanced vs. Unbalanced Forces",
@@ -33,6 +36,7 @@ tasks = [
 
 ["Week 5 Concept Builders"]
 points = 7
+bonus = 2
 tasks = [
     "Name That Energy",
     "What's Up (and Down) with KE and PE",
@@ -41,6 +45,7 @@ tasks = [
 
 ["Week 6 Concept Builders"]
 points = 7
+bonus = 2
 tasks = [
     "Energy Analysis",
     "Energy Analysis 2",
@@ -49,6 +54,7 @@ tasks = [
 
 ["Week 7 Concept Builders"]
 points = 9
+bonus = 0
 tasks = [
     "Pressure and Temperature",
     "Volume and Temperature",
@@ -57,6 +63,7 @@ tasks = [
 
 ["Week 8 Concept Builders"]
 points = 10
+bonus = 2
 tasks = [
     "Charge and Charging",
     "Getting the Hang of Charge",
@@ -66,6 +73,7 @@ tasks = [
 
 ["Week 9 Concept Builders"]
 points = 9
+bonus = 0
 tasks = [
     "Light Bulb Anatomy",
     "Current",
@@ -74,6 +82,7 @@ tasks = [
 
 ["Week 11 Concept Builders"]
 points = 19
+bonus = 1
 tasks = [
     "Wave Basics",
     "Frequency and Period",
@@ -85,12 +94,14 @@ tasks = [
 
 ["Week 12 Concept Builders"]
 points = 3
+bonus = 0
 tasks = [
     "Wave Interference",
 ]
 
 ["Week 13 Concept Builders"]
 points = 6
+bonus = 1
 tasks = [
     "Which One Doesn't Belong?  Projectile Motion",
     "Trajectory - Horizontally-Launched Projectiles",

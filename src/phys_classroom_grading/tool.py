@@ -37,14 +37,22 @@ def parse_spreadsheet(fname):
             parsed_dict[assignment] = {}
 
         if student not in parsed_dict[assignment].keys():
-            parsed_dict[assignment][student] = {"points": 0, "max": 0, "tasks": []}
+            parsed_dict[assignment][student] = {
+                "points": 0,
+                "max": 0,
+                "bonus": 0,
+                "tasks": [],
+            }
 
         assert isinstance(row["Completed"], bool)
         if row["Completed"]:
             parsed_dict[assignment][student]["points"] += 1
 
         task_section = sanitize_str(row["Section"], lower=True)
-        if not (task_section == "wizard level" or task_section == "wizard"):
+        if task_section == "wizard level" or task_section == "wizard":
+            parsed_dict[assignment][student]["bonus"] += 1
+
+        else:
             parsed_dict[assignment][student]["max"] += 1
 
         # Get tasks that go into this assignment (useful for debugging purposes)
@@ -56,10 +64,16 @@ def parse_spreadsheet(fname):
         for student, vals in parsed_dict[assignment].items():
             expected_max_pts = assignments[assignment]["points"]
             found_max_pts = vals["max"]
-
             if expected_max_pts != found_max_pts:
                 raise ValueError(
                     f"Got {found_max_pts} instead of {expected_max_pts} max points for assignment '{assignment}', student '{student}'"
+                )
+
+            expected_bonus = assignments[assignment]["bonus"]
+            found_bonus = vals["bonus"]
+            if expected_bonus != found_bonus:
+                raise ValueError(
+                    f"Got {found_bonus} instead of {expected_bonus} bonus points for assignment '{assignment}', student '{student}'"
                 )
 
             out_dict[assignment][student] = vals["points"]
