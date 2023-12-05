@@ -4,10 +4,6 @@ import tomllib
 import pandas as pd
 
 
-with open("assignments.toml", "rb") as f:
-    assignments = tomllib.load(f)
-
-
 def sanitize_str(in_str, lower=False):
     """Get rid of extra crap that comes with strings in the PhysicsClassroom output."""
     out_str = in_str.replace("\u200b", "").strip()
@@ -17,9 +13,31 @@ def sanitize_str(in_str, lower=False):
     return out_str
 
 
-def parse_spreadsheet(fname):
-    sheet = pd.read_excel(fname)
+def parse_spreadsheet(sheet, assignments):
+    """Parse a dataframe representing PhysicsClassroom "Detailed Progress".
 
+    Parameters
+    ----------
+    sheet : DataFrame
+        A Pandas dataframe representing the "Detailed Progress" xlsx file from the
+        PhysicsClassroom class page.
+    assignments : dict
+        The assignments to accumulate tasks into.  Each key should be the name of an
+        assignment on Canvas, and each value should itself be a dictionary.  These
+        sub-dictionaries should have the following key/values: "points", the point value
+        of the assignment on Canvas (float); "bonus", the number of bonus points over
+        the assigned point value a student can get (float); and "tasks", the (exact!)
+        names on PhysicsClassroom of the Concept Builders that belong to this assignment
+        (list of str).
+
+    Returns
+    -------
+    dict
+        The accumulated points for each assignment by student.  The keys of this
+        dictionary are the Canvas assignment names (defined in the `assignments`
+        parameter), and the values are dictionaries of the form
+        `{student name: points earned}`.
+    """
     parsed_dict = {}
     for i, row in sheet.iterrows():
         task = sanitize_str(row["Task"])
@@ -82,6 +100,12 @@ def parse_spreadsheet(fname):
 
 
 if __name__ == "__main__":
-    out_dict = parse_spreadsheet("example_grades_detailed.xlsx")
+    sheet = pd.read_excel("example_grades_detailed.xlsx")
+
+    with open("assignments.toml", "rb") as f:
+        assignments = tomllib.load(f)
+
+    out_dict = parse_spreadsheet(sheet, assignments)
+
     df = pd.DataFrame.from_dict(out_dict)
     df.to_csv("out_test.csv", header=True)
