@@ -217,19 +217,19 @@ if __name__ == "__main__":
 
     from phys_classroom_grading.io import load_csv, load_excel, load_toml, write_csv
 
-    physics_classroom_grades_fname = "example_grades_detailed.xlsx"
+    physics_classroom_grades_fname = "grades/example_pc_grades.xlsx"
     sheet = load_excel(physics_classroom_grades_fname)
 
     assignments_fname = "assignments.toml"
     assignments = load_toml(assignments_fname)
 
-    canvas_grades_fname = "all_grades.csv"
+    canvas_grades_fname = "grades/example_all_grades.csv"
     init_grades = load_csv(canvas_grades_fname)
 
     out_dict = parse_spreadsheet(sheet, assignments)
 
     df = pd.DataFrame.from_dict(out_dict)
-    df.to_csv("out_test.csv", header=True)
+    df.to_csv("grades/out_test.csv", header=True)
 
     all_grades = load_grades(out_dict, init_grades, assignments)
     out_fname = (
