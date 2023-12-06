@@ -18,6 +18,13 @@ def sanitize_str(in_str, lower=False):
 def parse_spreadsheet(sheet, assignments):
     """Parse a dataframe representing PhysicsClassroom "Detailed Progress".
 
+    We step through the PhysicsClassroom spreadsheet row by row.  Each row corresponds
+    to a single sub-part/difficulty level (or "Section", on the spreadsheet) of a
+    Concept Builder.  A student earns 1 point if the "Completed" column reads "True", 0
+    otherwise.  We then accumulate points per assignment by looking up which assignment
+    each concept builder belongs to, and check that the assignment has the right number
+    of maximum regular points and bonus points.
+
     Parameters
     ----------
     sheet : DataFrame
@@ -42,20 +49,26 @@ def parse_spreadsheet(sheet, assignments):
     """
     parsed_dict = {}
     for i, row in sheet.iterrows():
+        # Need to strip zero length spaces and leading/trailing whitespace
         task = sanitize_str(row["Task"])
         student = sanitize_str(row["Student"])
 
+        # Get the assignment corresponding to this task (concept builder)
         for assignment, info in assignments.items():
             if task in info["tasks"]:
                 break
 
         else:
+            # We only get here if the for loop didn't break - hence we did not find the
+            # task in the assignments dictionary keys.
             warn(f"Found unexpected task: {task}")
             continue
 
+        # Add assignment to parsed_dict if it isn't already there
         if assignment not in parsed_dict.keys():
             parsed_dict[assignment] = {}
 
+        # Add per-student dictionary to assignment if it isn't already there
         if student not in parsed_dict[assignment].keys():
             parsed_dict[assignment][student] = {
                 "points": 0,
@@ -64,10 +77,12 @@ def parse_spreadsheet(sheet, assignments):
                 "tasks": [],
             }
 
+        # Student gets a point for each completed section
         assert isinstance(row["Completed"], bool)
         if row["Completed"]:
             parsed_dict[assignment][student]["points"] += 1
 
+        # Also add up how many regular and bonus points this assignment is worth
         task_section = sanitize_str(row["Section"], lower=True)
         if task_section == "wizard level" or task_section == "wizard":
             parsed_dict[assignment][student]["bonus"] += 1
@@ -78,6 +93,8 @@ def parse_spreadsheet(sheet, assignments):
         # Get tasks that go into this assignment (useful for debugging purposes)
         parsed_dict[assignment][student]["tasks"].append(f"{task}: {row['Section']}")
 
+    # Now having parsed the spreadsheet, get dictionary with just earned points, and run
+    # some checks against expected point values
     out_dict = {}
     for assignment in assignments.keys():
         out_dict[assignment] = {}
@@ -102,16 +119,42 @@ def parse_spreadsheet(sheet, assignments):
 
 
 def load_grades(concept_builders, all_grades, assignments, ignore_test_student=True):
-    """Merge parsed concept builder grades into the overall Canvas grades spreasheet."""
+    """Merge parsed concept builder grades into the overall Canvas grades spreasheet.
+
+    Parameters
+    ----------
+    concept_builders : dict
+        Output of `parse_spreadsheet`, represents the grades for each assignment totaled
+        off of PhysicsClassroom.
+    all_grades : DataFrame
+        An exported gradebook spreadsheet from Canvas, loaded into a Pandas DataFrame.
+    assignments : dict
+        The assignments we are going to populate in the gradebook.  Each key should be
+        the name of an assignment on Canvas, and each value should itself be a
+        dictionary.  Only one key is used in these sub-dictionaries: "points", the value
+        of the assignment in Canvas (float).
+    ignore_test_student : bool, optional
+        Whether to ignore a student on the last row of the gradebook named "Student,
+        Test".  This should probably always be `True` unless there is a student in your
+        class who is actually named "Test Student" and comes last in alphabetical order.
+
+    Returns
+    -------
+    DataFrame
+        The gradebook spreadsheet with the appropriate assignments filled in.
+    """
     # Get starting index - students are listed after a "Points Possible" row
     canvas_students = list(all_grades["Student"])
     i0 = canvas_students.index("    Points Possible") + 1
     canvas_students = canvas_students[i0:]
 
+    # Test Student seems to always come at the end of the roster; ignore them
     if ignore_test_student and canvas_students[-1] == "Student, Test":
         canvas_students = canvas_students[:-1]
 
+    # Iterate through assignments
     for assignment, info in assignments.items():
+        # Check that we have the same students for this assignment as listed in Canvas
         physics_classroom_students = sorted(list(concept_builders[assignment].keys()))
         if not canvas_students == physics_classroom_students:
             # Prepare output to make differences obvious
@@ -134,6 +177,7 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
                 f"Inconsistent students for assignment '{assignment}': \n{error_str}"
             )
 
+        # Get Concept Builder grades; should be in same order as students/rows
         cb_grades = [
             concept_builders[assignment][student]
             for student in physics_classroom_students
