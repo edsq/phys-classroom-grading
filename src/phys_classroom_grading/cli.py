@@ -10,7 +10,12 @@ from phys_classroom_grading.tool import load_grades, parse_spreadsheet
 @click.command()
 @click.argument("physics_classroom_file")
 @click.argument("canvas_file")
-@click.argument("assignments_file")
+@click.option(
+    "--assignments_file",
+    default="assignments.toml",
+    show_default=True,
+    help="Config file assigning Physics Classroom tasks to Canvas assignments.",
+)
 def main(physics_classroom_file, canvas_file, assignments_file):
     """Parse output from Physics Classroom and merge into Canvas gradebook.
 
@@ -38,7 +43,7 @@ def main(physics_classroom_file, canvas_file, assignments_file):
         splitext(canvas_file)[0]
         + f"_updated_{datetime.now().strftime('%Y_%m_%d-%H_%M_%S')}.csv"
     )
-    
+
     # Save updated gradebook
     write_csv(all_grades, out_fname)
     click.echo(f"Updated gradebook written to {out_fname}")
