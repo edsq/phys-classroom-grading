@@ -1,8 +1,10 @@
 from datetime import datetime
+from importlib.resources import files
 from os.path import splitext
 
 import click
 
+import phys_classroom_grading
 from phys_classroom_grading.io import load_csv, load_excel, load_toml, write_csv
 from phys_classroom_grading.tool import load_grades, parse_spreadsheet
 
@@ -11,10 +13,9 @@ from phys_classroom_grading.tool import load_grades, parse_spreadsheet
 @click.argument("physics_classroom_file")
 @click.argument("canvas_file")
 @click.option(
-    "--assignments_file",
-    default="assignments.toml",
-    show_default=True,
-    help="Config file assigning Physics Classroom tasks to Canvas assignments.",
+    "--assignments-file",
+    default=None,
+    help="Custom config file assigning Physics Classroom tasks to Canvas assignments. See `assignments.toml` in this repo for an example.",
 )
 def main(physics_classroom_file, canvas_file, assignments_file):
     """Parse output from Physics Classroom and merge into Canvas gradebook.
@@ -27,6 +28,9 @@ def main(physics_classroom_file, canvas_file, assignments_file):
     sheet = load_excel(physics_classroom_file)
 
     # Load assignments config file
+    if assignments_file is None:
+        assignments_file = files(phys_classroom_grading) / "assignments.toml"
+
     assignments = load_toml(assignments_file)
 
     # Load initial Canvas gradebook
