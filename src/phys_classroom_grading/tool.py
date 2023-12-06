@@ -224,12 +224,6 @@ def format_grades(concept_builders, all_grades, assignments, ignore_test_student
                 f"Inconsistent students for assignment '{assignment}': \n{error_str}"
             )
 
-        # Get Concept Builder grades; should be in same order as students/rows
-        cb_grades = [
-            float(concept_builders[assignment][student])
-            for student in physics_classroom_students
-        ]
-
         # Canvas appends a number to each assignment, so we need some effort to get the
         # correct column name
         col_matches = [col for col in all_grades.columns if col.startswith(assignment)]
@@ -252,9 +246,10 @@ def format_grades(concept_builders, all_grades, assignments, ignore_test_student
         # Set grades to corresponding students.  Need to use `loc` here to avoid
         # ambiguity with view vs. copy, see:
         # https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-        # Also note that the slice here is inclusive of the endpoint, unlike the rest of
-        # python.
-        all_grades.loc[i0 : len(canvas_students) + i0 - 1, col_name] = cb_grades
+        for student in canvas_students:
+            all_grades.loc[all_grades["Student"] == student, col_name] = float(
+                concept_builders[assignment][student]
+            )
 
         # Save filled column
         out_assignment_cols.append(all_grades[col_name].copy())
