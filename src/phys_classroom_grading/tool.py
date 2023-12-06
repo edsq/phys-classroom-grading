@@ -117,6 +117,11 @@ def parse_spreadsheet(sheet, assignments):
     # some checks against expected point values
     out_dict = {}
     for assignment in assignments.keys():
+        # If we didn't find anything for this assignment, warn about it and skip
+        if assignment not in parsed_dict.keys():
+            warn(f"Did not find any tasks corresponding to assignment '{assignment}'")
+            continue
+
         out_dict[assignment] = {}
         for student, vals in parsed_dict[assignment].items():
             expected_tasks = sorted(assignments[assignment]["tasks"])
@@ -196,7 +201,10 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
         canvas_students = canvas_students[:-1]
 
     # Iterate through assignments
-    for assignment, info in assignments.items():
+    for assignment in concept_builders.keys():
+        # Get info from config file
+        info = assignments[assignment]
+
         # Check that we have the same students for this assignment as listed in Canvas
         physics_classroom_students = sorted(list(concept_builders[assignment].keys()))
         if not canvas_students == physics_classroom_students:
