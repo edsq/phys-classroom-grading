@@ -133,14 +133,14 @@ def parse_spreadsheet(sheet, assignments):
             found_max_pts = vals["max"]
             if expected_max_pts != found_max_pts:
                 raise ValueError(
-                    f"Got {found_max_pts} instead of {expected_max_pts} max points for assignment '{assignment}', student '{student}'"
+                    f"Found {found_max_pts} for the maximum possible non-bonus points (instead of {expected_max_pts}) for assignment '{assignment}', student '{student}'"
                 )
 
             expected_bonus = assignments[assignment]["bonus"]
             found_bonus = vals["bonus"]
             if expected_bonus != found_bonus:
                 raise ValueError(
-                    f"Got {found_bonus} instead of {expected_bonus} bonus points for assignment '{assignment}', student '{student}'"
+                    f"Found {found_bonus} for the maximum possible bonus points (instead of {expected_bonus}) for assignment '{assignment}', student '{student}'"
                 )
 
             # Make sure student hasn't somehow earned more points than possible
