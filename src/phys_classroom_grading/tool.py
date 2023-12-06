@@ -2,7 +2,6 @@
 from datetime import datetime
 from itertools import zip_longest
 from warnings import warn
-import tomllib
 import pandas as pd
 
 
@@ -213,21 +212,26 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
 
 
 if __name__ == "__main__":
-    sheet = pd.read_excel("example_grades_detailed.xlsx")
+    from os.path import splitext
+    from phys_classroom_grading.io import load_excel, load_csv, load_toml, write_csv
 
-    with open("assignments.toml", "rb") as f:
-        assignments = tomllib.load(f)
+    physics_classroom_grades_fname = "example_grades_detailed.xlsx"
+    sheet = load_excel(physics_classroom_grades_fname)
+
+    assignments_fname = "assignments.toml"
+    assignments = load_toml(assignments_fname)
+
+    canvas_grades_fname = "all_grades.csv"
+    init_grades = load_csv(canvas_grades_fname)
 
     out_dict = parse_spreadsheet(sheet, assignments)
 
     df = pd.DataFrame.from_dict(out_dict)
     df.to_csv("out_test.csv", header=True)
 
-    canvas_grades_fname = "all_grades"
-    init_grades = pd.read_csv(canvas_grades_fname + ".csv")
     all_grades = load_grades(out_dict, init_grades, assignments)
-    all_grades.to_csv(
-        canvas_grades_fname
-        + f"_updated_{datetime.now().strftime('%Y_%m_%d-%H_%M_%S')}.csv",
-        header=True,
+    out_fname = (
+        splitext(canvas_grades_fname)[0]
+        + f"_updated_{datetime.now().strftime('%Y_%m_%d-%H_%M_%S')}.csv"
     )
+    write_csv(all_grades, out_fname)
