@@ -55,7 +55,7 @@ file representing the exported Canvas gradebook (which should be a `.csv` file).
 Example usage:
 
 ```
-$ parse-PC-grades pc_grades_2023-12-05.xlsx canvas_grades_2023-12-05T2009.csv
+$ parse-PC-grades pc_grades.xlsx canvas_grades.csv
 Formatted grades written to physics_classroom_grades_2023_12_06-12_41_59.csv
 ```
 
@@ -64,7 +64,7 @@ would be useful if you have different assignments on Canvas than are in the defa
 `assignments.toml` file.  This would look like:
 
 ```
-$ parse-PC-grades pc_grades_2023-12-05.xlsx canvas_grades_2023-12-05T2009.csv --assignments-file custom_assignments.toml
+$ parse-PC-grades pc_grades.xlsx canvas_grades.csv --assignments-file custom_assignments.toml
 Formatted grades written to physics_classroom_grades_2023_12_06-12_41_59.csv
 ```
 
@@ -72,7 +72,7 @@ Finally, you can specify a different output filename (the default is
 `physics_classroom_grades_<timestamp>.csv`) with the `--output` option:
 
 ```
-$ parse-PC-grades pc_grades_2023-12-05.xlsx canvas_grades_2023-12-05T2009.csv --output custom-output-name.csv
+$ parse-PC-grades pc_grades.xlsx canvas_grades.csv --output custom-output-name.csv
 Formatted grades written to custom-output-name.csv
 ```
 
