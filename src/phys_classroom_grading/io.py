@@ -35,4 +35,4 @@ def load_toml(path):
 
 def write_csv(df, path):
     """Write a DataFrame to a csv file at `path`."""
-    df.to_csv(path, header=True)
+    df.to_csv(path, header=True, index=False)
