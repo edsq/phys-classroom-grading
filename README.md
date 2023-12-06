@@ -14,20 +14,18 @@ grades before uploading anything.
 
 ## Installation
 
-1. Clone this repository into an appropriate location
+1. Activate a python >= 3.9 environment (see [below](#creating-a-new-environment) for
+   tips; I strongly recommend creating an environment just for this utility)
 
-2. Activate a python environment (see [](#creating-a-new-environment) below for tips; I
-   strongly recommend creating an environment just for this utility)
-
-3. Install with `pip`:
+2. Install with `pip`:
 ```
-python -m pip install phys-classroom-grading/
+python -m pip install git+https://github.com/edsq/phys-classroom-grading.git
 ```
 
-4. Alternatively, you can skip dealing with environments entirely by installing with
+3. Alternatively, you can skip dealing with environments entirely by installing with
    [pipx](https://pipx.pypa.io/stable/):
 ```
-pipx install phys-classroom-grading/
+pipx install git+https://github.com/edsq/phys-classroom-grading.git
 ```
 
 ## Setup
@@ -39,11 +37,12 @@ Before using this utility, the following must all be true:
    already the case.
 2. Each assignment (corresponding to multiple Physics Classroom tasks) should be on
    Canvas already with the correct number of points.
-3. The config file (by default the `assignments.toml` file in this repository) should
-   correctly reflect the Physics Classroom tasks for each assignment, as well as the
-   correct point value and possible bonus points for the assignment.  See
-   [below](#usage) for how to specify a custom config file.  This config file also
-   determines which assignments will be put into the output grades.
+3. The config file (by default the
+   [`assignments.toml`](https://github.com/edsq/phys-classroom-grading/blob/b031ddf0ea50df36e69d25defeb71f333eafd14e/src/phys_classroom_grading/assignments.toml)
+   file in this repository) should correctly reflect the Physics Classroom tasks for
+   each assignment, as well as the correct point value and possible bonus points for the
+   assignment.  See [below](#usage) for how to specify a custom config file.  This
+   config file also determines which assignments will be put into the output grades.
 
 
 ## Usage
