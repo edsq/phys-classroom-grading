@@ -88,6 +88,7 @@ def parse_spreadsheet(sheet, assignments):
                 "max": 0,
                 "bonus": 0,
                 "tasks": [],
+                "tasks-sections": [],
             }
 
         # Student gets a point for each completed section
@@ -103,8 +104,14 @@ def parse_spreadsheet(sheet, assignments):
         else:
             parsed_dict[assignment][student]["max"] += 1
 
-        # Get tasks that go into this assignment (useful for debugging purposes)
-        parsed_dict[assignment][student]["tasks"].append(f"{task}: {row['Section']}")
+        # Ensure we record each task
+        if task not in parsed_dict[assignment][student]["tasks"]:
+            parsed_dict[assignment][student]["tasks"].append(task)
+
+        # Get tasks and sections that go into this assignment (useful for debugging purposes)
+        parsed_dict[assignment][student]["tasks-sections"].append(
+            f"{task}: {row['Section']}"
+        )
 
     # Now having parsed the spreadsheet, get dictionary with just earned points, and run
     # some checks against expected point values
@@ -112,6 +119,16 @@ def parse_spreadsheet(sheet, assignments):
     for assignment in assignments.keys():
         out_dict[assignment] = {}
         for student, vals in parsed_dict[assignment].items():
+            expected_tasks = sorted(assignments[assignment]["tasks"])
+            found_tasks = sorted(vals["tasks"])
+            if expected_tasks != found_tasks:
+                error_str = get_list_comparison_string(
+                    expected_tasks, found_tasks, "Expected", "Found"
+                )
+                raise ValueError(
+                    f"Got unexpected tasks for assignment '{assignment}', student '{student}':\n{error_str}"
+                )
+
             expected_max_pts = assignments[assignment]["points"]
             found_max_pts = vals["max"]
             if expected_max_pts != found_max_pts:
