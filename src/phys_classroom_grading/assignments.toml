@@ -107,3 +107,13 @@ tasks = [
     "Trajectory - Horizontally-Launched Projectiles",
     "Trajectory - Angle-Launched Projectiles",
 ]	
+
+["Week 15 Concept Builders"]
+points = 10
+bonus = 2
+tasks = [
+    "Circular Logic",
+    "Case Studies - Circular Motion",
+    "Forces and Free-Body Diagrams in Circular Motion",
+    "Universal Gravitation",
+]
