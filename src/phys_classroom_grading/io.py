@@ -1,5 +1,11 @@
 """Simple functions for abstracting file input/output."""
-import tomllib
+try:
+    import tomllib
+
+except ImportError:
+    # Needed for python < 3.11 support
+    import tomli as tomllib
+
 import pandas as pd
 
 
