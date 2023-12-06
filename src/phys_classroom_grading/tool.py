@@ -15,6 +15,19 @@ def sanitize_str(in_str, lower=False):
     return out_str
 
 
+def get_list_comparison_string(la, lb, title_a, title_b):
+    """Get a nicely formatted string comparing lists `la` and `lb`."""
+    max_len = max([len(item) for item in la + [title_a]])
+    zipped = zip_longest(la, lb, fillvalue="")
+
+    out_str = f"{title_a:>{max_len}}  {title_b}"
+    out_str += f"\n{'-' * len(title_a):>{max_len}}  {'-' * len(title_b)}"
+    for item_a, item_b in zipped:
+        out_str += f"\n{item_a:>{max_len}}  {item_b}"
+
+    return out_str
+
+
 def parse_spreadsheet(sheet, assignments):
     """Parse a dataframe representing PhysicsClassroom "Detailed Progress".
 
@@ -158,20 +171,12 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
         physics_classroom_students = sorted(list(concept_builders[assignment].keys()))
         if not canvas_students == physics_classroom_students:
             # Prepare output to make differences obvious
-            max_name_len = max(
-                [
-                    len(name)
-                    for name in physics_classroom_students + ["Physics Classroom"]
-                ]
+            error_str = get_list_comparison_string(
+                physics_classroom_students,
+                canvas_students,
+                "Physics Classroom",
+                "Canvas",
             )
-            zipped_names = zip_longest(
-                physics_classroom_students, canvas_students, fillvalue=""
-            )
-
-            error_str = f"{'Physics Classroom':>{max_name_len}}  Canvas"
-            error_str += f"\n{'-----------------':>{max_name_len}}  ------"
-            for pc_name, canvas_name in zipped_names:
-                error_str += f"\n{pc_name:>{max_name_len}}  {canvas_name}"
 
             raise ValueError(
                 f"Inconsistent students for assignment '{assignment}': \n{error_str}"
