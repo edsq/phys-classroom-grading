@@ -143,7 +143,20 @@ def parse_spreadsheet(sheet, assignments):
                     f"Got {found_bonus} instead of {expected_bonus} bonus points for assignment '{assignment}', student '{student}'"
                 )
 
-            out_dict[assignment][student] = vals["points"]
+            # Make sure student hasn't somehow earned more points than possible
+            # I actually don't think this should be possible given the checks above, but
+            # it probably can't hurt
+            earned_points = vals["points"]
+            max_possible_points = (
+                assignments[assignment]["points"] + assignments[assignment]["bonus"]
+            )
+            if earned_points > max_possible_points:
+                raise ValueError(
+                    f"Student '{student}' has {earned_points} points on assignment '{assignment}', but the maximum possible should be {max_possible_points}"
+                )
+
+            # Finally, add earned points to the output dictionary
+            out_dict[assignment][student] = earned_points
 
     return out_dict
 
