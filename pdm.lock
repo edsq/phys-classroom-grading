@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:588e89518cdb896f340519265dc3ac12da59c5ddb0a2ade75bf71ad5ae09f963"
+content_hash = "sha256:4344f62754b6f3549192a8b520dac83b932b4f6019ea63ae4f5807a49536af2c"
 
 [[package]]
 name = "asttokens"
