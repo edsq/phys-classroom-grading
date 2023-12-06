@@ -16,7 +16,7 @@ readme = "README.md"
 license = {text = "MIT"}
 
 [project.scripts]
-merge-grades = "phys_classroom_grading.cli:main"
+parse-PC-grades = "phys_classroom_grading.cli:main"
 
 [build-system]
 requires = ["pdm-backend"]
