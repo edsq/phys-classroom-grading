@@ -2,6 +2,7 @@
 from datetime import datetime
 from itertools import zip_longest
 from warnings import warn
+
 import pandas as pd
 
 
@@ -213,7 +214,8 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
 
 if __name__ == "__main__":
     from os.path import splitext
-    from phys_classroom_grading.io import load_excel, load_csv, load_toml, write_csv
+
+    from phys_classroom_grading.io import load_csv, load_excel, load_toml, write_csv
 
     physics_classroom_grades_fname = "example_grades_detailed.xlsx"
     sheet = load_excel(physics_classroom_grades_fname)

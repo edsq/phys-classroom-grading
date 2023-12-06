@@ -23,4 +23,10 @@ dev = [
     "black[jupyter]>=23.11.0",
     "pre-commit>=3.5.0",
     "ipython>=8.18.1",
+    "isort>=5.12.0",
 ]
+
+[tool.isort]
+profile = "black"
+skip_gitignore = true
+known_first_party = ["phys_classroom_grading", "tests"]
