@@ -6,7 +6,7 @@ import click
 
 import phys_classroom_grading
 from phys_classroom_grading.io import load_csv, load_excel, load_toml, write_csv
-from phys_classroom_grading.tool import load_grades, parse_spreadsheet
+from phys_classroom_grading.tool import format_grades, parse_spreadsheet
 
 
 @click.command()
@@ -18,7 +18,7 @@ from phys_classroom_grading.tool import load_grades, parse_spreadsheet
     help="Custom config file assigning Physics Classroom tasks to Canvas assignments. See `assignments.toml` in this repo for an example.",
 )
 def main(physics_classroom_file, canvas_file, assignments_file):
-    """Parse output from Physics Classroom and merge into Canvas gradebook.
+    """Parse output from Physics Classroom and format for Canvas gradebook.
 
     PHYSICS_CLASSROOM_FILE should be the output of the "Export Detailed Progress" button
     on the Class page on Physics Classroom (an excel `.xlsx` file), and CANVAS_FILE is
@@ -39,15 +39,15 @@ def main(physics_classroom_file, canvas_file, assignments_file):
     # Parse Physics Classroom grades
     pc_dict = parse_spreadsheet(sheet, assignments)
 
-    # Merge PC grades into gradebook
-    all_grades = load_grades(pc_dict, init_grades, assignments)
+    # Format PC grades for gradebook
+    new_grades = format_grades(pc_dict, init_grades, assignments)
 
     # Get output filename
     out_fname = (
-        splitext(canvas_file)[0]
-        + f"_updated_{datetime.now().strftime('%Y_%m_%d-%H_%M_%S')}.csv"
+        "physics_classroom_grades"
+        + f"_{datetime.now().strftime('%Y_%m_%d-%H_%M_%S')}.csv"
     )
 
     # Save updated gradebook
-    write_csv(all_grades, out_fname)
-    click.echo(f"Updated gradebook written to {out_fname}")
+    write_csv(new_grades, out_fname)
+    click.echo(f"Formatted grades written to {out_fname}")

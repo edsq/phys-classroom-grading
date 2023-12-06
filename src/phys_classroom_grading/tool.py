@@ -166,8 +166,8 @@ def parse_spreadsheet(sheet, assignments):
     return out_dict
 
 
-def load_grades(concept_builders, all_grades, assignments, ignore_test_student=True):
-    """Merge parsed concept builder grades into the overall Canvas grades spreasheet.
+def format_grades(concept_builders, all_grades, assignments, ignore_test_student=True):
+    """Format parsed concept builder grades for the overall Canvas grades spreasheet.
 
     Parameters
     ----------
@@ -189,7 +189,8 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
     Returns
     -------
     DataFrame
-        The gradebook spreadsheet with the appropriate assignments filled in.
+        The gradebook spreadsheet with only the necessary columns, assignment points
+        filled in.
     """
     # Get starting index - students are listed after a "Points Possible" row
     canvas_students = list(all_grades["Student"])
@@ -199,6 +200,9 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
     # Test Student seems to always come at the end of the roster; ignore them
     if ignore_test_student and canvas_students[-1] == "Student, Test":
         canvas_students = canvas_students[:-1]
+
+    # This list will hold the populated assignment columns from the Canvas spreadsheet
+    out_assignment_cols = []
 
     # Iterate through assignments
     for assignment in concept_builders.keys():
@@ -252,7 +256,23 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
         # python.
         all_grades.loc[i0 : len(canvas_students) + i0 - 1, col_name] = cb_grades
 
-    return all_grades
+        # Save filled column
+        out_assignment_cols.append(all_grades[col_name].copy())
+
+    # Now ensure we only return the columns we need
+    required_colnames = [
+        "Student",
+        "ID",
+        "SIS User ID",
+        "SIS Login ID",
+        "Section",
+    ]
+
+    out_cols = [
+        all_grades[col].copy() for col in required_colnames
+    ] + out_assignment_cols
+
+    return pd.concat(out_cols, axis=1)
 
 
 if __name__ == "__main__":
@@ -274,7 +294,7 @@ if __name__ == "__main__":
     df = pd.DataFrame.from_dict(out_dict)
     df.to_csv("grades/out_test.csv", header=True)
 
-    all_grades = load_grades(out_dict, init_grades, assignments)
+    all_grades = format_grades(out_dict, init_grades, assignments)
     out_fname = (
         splitext(canvas_grades_fname)[0]
         + f"_updated_{datetime.now().strftime('%Y_%m_%d-%H_%M_%S')}.csv"
