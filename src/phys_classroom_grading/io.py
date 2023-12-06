@@ -20,7 +20,7 @@ def load_excel(path):
 def load_csv(path):
     """Load a csv file at `path` into a Pandas DataFrame."""
     with open(path, "r") as f:
-        out = pd.read_csv(f)
+        out = pd.read_csv(f, dtype="object")
 
     return out
 

@@ -222,7 +222,7 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
 
         # Get Concept Builder grades; should be in same order as students/rows
         cb_grades = [
-            concept_builders[assignment][student]
+            float(concept_builders[assignment][student])
             for student in physics_classroom_students
         ]
 
@@ -238,7 +238,7 @@ def load_grades(concept_builders, all_grades, assignments, ignore_test_student=T
             col_name = col_matches[0]
 
         # Check that point value in assignments is same as on Canvas
-        canvas_points = all_grades[col_name][i0 - 1]
+        canvas_points = float(all_grades[col_name][i0 - 1])
         expected_points = info["points"]
         if canvas_points != expected_points:
             raise ValueError(
