@@ -68,16 +68,28 @@ def main(physics_classroom_file, canvas_file, assignments_file, output):
 
 @click.command()
 @click.argument("canvas_file")
-@click.argument("config_file")
-def final_grades(canvas_file, config_file):
-    """Print final grades parsed from the gradebook."""
+@click.option(
+    "-c",
+    "--config-file",
+    default=None,
+    help="Custom config file setting grade cutoffs and units to use in final grade calculation.  Defaults to `final_grades_config.toml` in this repository.",
+)
+def final_grades(canvas_file, config_file=None):
+    """Print final grades parsed from the gradebook.
+
+    CANVAS_FILE should be the `csv` output of exporting the Canvas gradebook.
+    """
     # Load Canvas gradebook
-    grades = load_csv(canvas_file)
+    gradebook = load_csv(canvas_file)
 
     # Load config
+    if config_file is None:
+        config_file = files(phys_classroom_grading) / "final_grades_config.toml"
+
     config = load_toml(config_file)
 
-    students, grades = calc_grades(grades, config)
+    # Calculate number grades
+    students, grades = calc_grades(gradebook, config)
 
     # Get letter grades
     letters = get_letter_grades(grades, config)

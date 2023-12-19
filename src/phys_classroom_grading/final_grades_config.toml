@@ -1,0 +1,14 @@
+units = ["Motion and Stability", "Energy", "Waves", "Earth's Place in the Universe"]
+
+grade_minimums = [
+    { letter = "A",  min = 95.0 },
+    { letter = "A-", min = 90.0 },
+    { letter = "B+", min = 85.0 },
+    { letter = "B",  min = 80.0 },
+    { letter = "B-", min = 75.0 },
+    { letter = "C+", min = 70.0 },
+    { letter = "C",  min = 65.0 },
+    { letter = "C-", min = 60.0 },
+    { letter = "D+", min = 55.0 },
+    { letter = "D",  min = 50.0 },
+]
