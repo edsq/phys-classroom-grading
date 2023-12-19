@@ -5,6 +5,11 @@ from os.path import splitext
 import click
 
 import phys_classroom_grading
+from phys_classroom_grading.final_grades import (
+    calc_grades,
+    get_letter_grades,
+    print_grades,
+)
 from phys_classroom_grading.io import load_csv, load_excel, load_toml, write_csv
 from phys_classroom_grading.tool import format_grades, parse_spreadsheet
 
@@ -59,3 +64,25 @@ def main(physics_classroom_file, canvas_file, assignments_file, output):
     # Save updated gradebook
     write_csv(new_grades, output)
     click.echo(f"Formatted grades written to {output}")
+
+
+@click.command()
+@click.argument("canvas_file")
+@click.argument("config_file")
+def final_grades(canvas_file, config_file):
+    """Print final grades parsed from the gradebook."""
+    # Load Canvas gradebook
+    grades = load_csv(canvas_file)
+
+    # Load config
+    config = load_toml(config_file)
+
+    students, grades = calc_grades(grades, config)
+
+    # Get letter grades
+    letters = get_letter_grades(grades, config)
+
+    # Round grade and cast to string
+    grades = [f"{grade:0.2f}" for grade in grades]
+
+    print_grades({"Student": students, "Grade": grades, "Letter": letters})

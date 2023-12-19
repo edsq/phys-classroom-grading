@@ -17,6 +17,7 @@ license = {text = "MIT"}
 
 [project.scripts]
 parse-PC-grades = "phys_classroom_grading.cli:main"
+calc-final-grades = "phys_classroom_grading.cli:final_grades"
 
 [build-system]
 requires = ["pdm-backend"]
